@@ -1,9 +1,9 @@
 /*
-The sketch reads the 256-bit long hashes of transactions on Ethereum blockchain and uses them 
- to forge brand new deterministic artworks.   
- 
- Code inspired by Matt Pearson (http://zenbullets.com/), 
- written by Massimo Franceschet (https://twitter.com/HEX0x6C), 
+The sketch reads the 256-bit long hashes of transactions on Ethereum blockchain and uses them
+ to forge brand new deterministic artworks.
+
+ Code inspired by Matt Pearson (http://zenbullets.com/),
+ written by Massimo Franceschet (https://twitter.com/HEX0x6C),
  checked by Erick Calderon (@snowfro)
  for Art Blocks project (https://www.artblocks.io/).
  */
@@ -12,16 +12,16 @@ var a; // semi-major axis of the ellipse
 var b; // semi-minor axis of the ellipse
 var stepa, stepb; // axis increment
 var lastx, lasty, x, y; // previous and current coordinates
-var noi; // Perlin noise 
+var noi; // Perlin noise
 var variance; // axis variabce
 var tiltStart; // initial angle
 var tiltEnd;   // final angle
 var tiltStep;  // angle increment
 var rand = false; // random behaviour
 var ncoils = 100; // number of coils
-var artNodeOld = "0xAba3A91D01b6f0766E769131D479cAdE6F132984" // old art node 
+var artNodeOld = "0xAba3A91D01b6f0766E769131D479cAdE6F132984" // old art node
 var artNodeNew = "0xd5027a93d556b9c4d07db2c9ef6624de041ec7a3" // new art node
-var artNodeTest = "0x0d66d4be9342fbed92f28de8c34cbedacb9cb7f0" // test art node
+var artNodeTest = "0xbc68eb5c3d099b07fdcef3244912c246abed671f" // test art node
 var homestead = "http://art-blocks-endpoints.whatsthescore.webfactional.com/homestead/"; // endpoint url
 var homesteadTest = "http://art-blocks-endpoints.whatsthescore.webfactional.com/ropsten/"; // test endpoint url
 var endpoint;
@@ -41,19 +41,23 @@ var zero = "0x0000000000000000000000000000000000000000000000000000000000000000"
 
 
 function setup() {
-  endpoint = homesteadTest + artNodeTest + "/blocknumber";
+  endpoint = homestead + artNodeNew + "/blocknumber";
   var myCanvas = createCanvas(1000, 1000);
   myCanvas.parent('myContainer');
 }
 
 function draw() {
-  loadJSON(endpoint, pickJSON);
+  //loadJSON(endpoint, pickJSON);
+
 }
 
+window.setInterval(function() {
+    loadJSON(endpoint, pickJSON)
+  }, 1000);
 // pick and process JSON
 function pickJSON(json) {
   blocknumber = json.blocknumber;
-  hash = json.hash;  
+  hash = json.hash;
   // if hash is null print QR code
   if (hash === zero) {
     document.getElementById("hash").innerHTML = "INSERT COIN...";
@@ -61,10 +65,10 @@ function pickJSON(json) {
     background(255);
     drawQR();
   } else {
-  // if hash not null and there is a new block print the coil and save it  
+  // if hash not null and there is a new block print the coil and save it
     if (blocknumber > oldBlocknumber) {
       console.log("Blocknumber:", blocknumber, "Hash:", hash);
-      document.getElementById("hash").innerHTML = hash;
+      document.getElementById("hash").innerHTML = "Processing hash " + hash + " from TokenID " + blocknumber;
       oldBlocknumber = blocknumber;
       // remove prefix
       hash = hash.substring(2, hash.length);
@@ -81,7 +85,7 @@ function pickJSON(json) {
   }
 }
 
-function drawQR() {  
+function drawQR() {
   var side = 600;
   image(img, (width - side)/2, (height - side)/2, side, side);
 }
@@ -123,7 +127,7 @@ function drawCoil() {
   for (var alpha = startTilt; alpha < endTilt; alpha += stepTilt) {
 
     lastx = x;
-    lasty = y;  
+    lasty = y;
 
     mya = a + (noise(noi) - 0.5) * variance;
     myb = b + (noise(noi) - 0.5) * variance;
